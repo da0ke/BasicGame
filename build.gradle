@@ -1,0 +1,18 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+
+group = 'BasicGame'
+version = '0.0.1'
+
+repositories {
+    jcenter()
+}
+
+dependencies {
+	def jme3 = [g:'org.jmonkeyengine', v:'3.2.1-stable']
+    compile "$jme3.g:jme3-core:$jme3.v"
+    compile "$jme3.g:jme3-desktop:$jme3.v"
+    compile "$jme3.g:jme3-lwjgl:$jme3.v"
+}
+
+[compileJava,compileTestJava,javadoc]*.options*.encoding = 'UTF-8'
