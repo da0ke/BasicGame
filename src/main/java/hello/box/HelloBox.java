@@ -1,7 +1,8 @@
-package cn.da0ke.box;
+package hello.box;
 import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
+import com.jme3.math.FastMath;
 import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
@@ -9,7 +10,9 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
 import com.jme3.system.AppSettings;
 
-public class BasicGame extends SimpleApplication {
+public class HelloBox extends SimpleApplication {
+	
+	private Geometry geom;
 
 	/**
 	 * 初始化3D场景，显示一个方块
@@ -20,10 +23,10 @@ public class BasicGame extends SimpleApplication {
 		Mesh box = new Box(1, 1, 1);
 		
 		// 加载一个感光材质
-		Material mat = new Material(assetManager, "light/Lighting.j3md");
+		Material mat = new Material(assetManager, "MatDefs/Lighting.j3md");
 		
 		// 创建一个几何体，应用刚才的网格和材质
-		Geometry geom = new Geometry("Box");
+		geom = new Geometry("Box");
 		geom.setMesh(box);
 		geom.setMaterial(mat);
 		
@@ -41,6 +44,17 @@ public class BasicGame extends SimpleApplication {
 		
 	}
 	
+	@Override
+	public void simpleUpdate(float tpf) {
+		super.simpleUpdate(tpf);
+		
+		// 旋转速度：每秒90°
+		float speed = FastMath.PI/2;
+		
+		// 让方块匀速旋转
+		geom.rotate(0, tpf * speed, 0);
+	}
+	
 	public static void main(String[] args) {
 		// 配置参数
 		AppSettings settings = new AppSettings(true);
@@ -49,7 +63,7 @@ public class BasicGame extends SimpleApplication {
 		
 		
 		// 启动程序
-		BasicGame app = new BasicGame();
+		HelloBox app = new HelloBox();
 		app.setSettings(settings);
 		app.setShowSettings(true);
 		app.start();
