@@ -1,6 +1,5 @@
 package hello.node;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -9,12 +8,12 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
-import com.jme3.scene.SceneGraphVisitor;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.system.AppSettings;
 
-public class HelloNode extends SimpleApplication {
+import hello.application.BaseApplication;
+
+public class HelloNode extends BaseApplication {
 	
 	private Spatial spatial;
 
@@ -106,35 +105,11 @@ public class HelloNode extends SimpleApplication {
 	}
 
 	public static void main(String[] args) {
-		// 配置参数
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("Hello node"); // 标题
-		settings.setResolution(1024, 768); // 分辨率
-
 		// 启动程序
-		HelloNode app = new HelloNode();
-		app.setSettings(settings);
-		app.setShowSettings(true);
-		app.start();
+		new HelloNode().start("节点");
 		
 	}
 
-	private void toggleWireframe(final boolean flag) {
-		// 深度优先遍历
-		rootNode.depthFirstTraversal(new SceneGraphVisitor() {
-			
-			@Override
-			public void visit(Spatial spatial) {
-				if(spatial instanceof Geometry) {
-					Geometry geom = (Geometry)spatial;
-					
-					Material mat = geom.getMaterial();
-	                if (mat != null) {
-	                    mat.getAdditionalRenderState().setWireframe(flag);
-	                }
-				}
-			}
-		});
-	}
+	
 
 }

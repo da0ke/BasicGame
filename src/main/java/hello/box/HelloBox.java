@@ -1,5 +1,4 @@
 package hello.box;
-import com.jme3.app.SimpleApplication;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
@@ -8,9 +7,10 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
-import com.jme3.system.AppSettings;
 
-public class HelloBox extends SimpleApplication {
+import hello.application.BaseApplication;
+
+public class HelloBox extends BaseApplication {
 	
 	private Geometry geom;
 
@@ -56,17 +56,8 @@ public class HelloBox extends SimpleApplication {
 	}
 	
 	public static void main(String[] args) {
-		// 配置参数
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("一个方块"); //标题
-		settings.setResolution(1024, 768); //分辨率
-		
-		
 		// 启动程序
-		HelloBox app = new HelloBox();
-		app.setSettings(settings);
-		app.setShowSettings(true);
-		app.start();
+		new HelloBox().start("一个方块");
 	}
 
 }

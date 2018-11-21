@@ -1,17 +1,14 @@
 package hello.mesh;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
-import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
-import com.jme3.scene.debug.Arrow;
-import com.jme3.system.AppSettings;
 import com.jme3.util.BufferUtils;
 
-public class HelloMesh extends SimpleApplication {
+import hello.application.BaseApplication;
+
+public class HelloMesh extends BaseApplication {
 
 	@Override
 	public void simpleInitApp() {
@@ -21,10 +18,7 @@ public class HelloMesh extends SimpleApplication {
 		createHex();
 
 		// 创建X、Y、Z方向的箭头，作为参考坐标系
-		createArrow(new Vector3f(5, 0, 0), ColorRGBA.Green);
-		createArrow(new Vector3f(0, 5, 0), ColorRGBA.Red);
-		createArrow(new Vector3f(0, 0, 5), ColorRGBA.Blue);
-		
+		addCoordinate();
 	}
 
 	/**
@@ -73,36 +67,9 @@ public class HelloMesh extends SimpleApplication {
 		rootNode.attachChild(geom);
 	}
 
-	/**
-	 * 创建一个箭头
-	 * 
-	 * @param vec3
-	 * @param color
-	 */
-	private void createArrow(Vector3f vec3, ColorRGBA color) {
-		// 创建材质，设定箭头的颜色
-		Material mat = new Material(assetManager, "MatDefs/Unshaded.j3md");
-		mat.setColor("Color", color);
-
-		// 创建几何物体，应用箭头网格
-		Geometry geom = new Geometry("箭头", new Arrow(vec3));
-		geom.setMaterial(mat);
-
-		// 添加到场景中
-		rootNode.attachChild(geom);
-	}
-
 	public static void main(String[] args) {
-		// 配置参数
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("一个方块"); // 标题
-		settings.setResolution(1024, 768); // 分辨率
-
 		// 启动程序
-		HelloMesh app = new HelloMesh();
-		app.setSettings(settings);
-		app.setShowSettings(true);
-		app.start();
+		new HelloMesh().start("网格");
 	}
 
 }

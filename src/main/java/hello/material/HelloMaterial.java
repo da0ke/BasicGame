@@ -1,6 +1,5 @@
 package hello.material;
 
-import com.jme3.app.SimpleApplication;
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -9,10 +8,11 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 
-public class HelloMaterial extends SimpleApplication {
+import hello.application.BaseApplication;
+
+public class HelloMaterial extends BaseApplication {
 
 	@Override
 	public void simpleInitApp() {
@@ -147,16 +147,8 @@ public class HelloMaterial extends SimpleApplication {
 	}
 	
 	public static void main(String[] args) {
-		// 配置参数
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("一个方块"); //标题
-		settings.setResolution(1024, 768); //分辨率
-		
 		// 启动程序
-		HelloMaterial app = new HelloMaterial();
-		app.setSettings(settings);
-		app.setShowSettings(true);
-		app.start();
+		new HelloMaterial().start("材质");
 	}
 
 }

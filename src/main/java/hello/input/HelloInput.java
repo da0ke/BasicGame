@@ -1,7 +1,5 @@
 package hello.input;
 
-import com.jme3.app.SimpleApplication;
-import com.jme3.input.InputManager;
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
 import com.jme3.input.RawInputListener;
@@ -14,17 +12,15 @@ import com.jme3.input.event.KeyInputEvent;
 import com.jme3.input.event.MouseButtonEvent;
 import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.input.event.TouchEvent;
-import com.jme3.light.AmbientLight;
-import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
-import com.jme3.system.AppSettings;
 import com.jme3.texture.Texture;
 
-public class HelloInput extends SimpleApplication {
+import hello.application.BaseApplication;
+
+public class HelloInput extends BaseApplication {
 
 	/**
 	 * 开火消息
@@ -179,16 +175,8 @@ public class HelloInput extends SimpleApplication {
 	}
 
 	public static void main(String[] args) {
-		// 配置参数
-		AppSettings settings = new AppSettings(true);
-		settings.setTitle("Hello node"); // 标题
-		settings.setResolution(1024, 768); // 分辨率
-
 		// 启动程序
-		HelloInput app = new HelloInput();
-		app.setSettings(settings);
-		app.setShowSettings(true);
-		app.start();
+		new HelloInput().start("节点");
 	}
 
 }
