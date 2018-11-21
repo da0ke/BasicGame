@@ -3,7 +3,6 @@ package hello.shape;
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
-import com.jme3.system.AppSettings;
 
 import hello.application.BaseApplication;
 
