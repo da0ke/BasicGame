@@ -1,6 +1,7 @@
 package tutorial.beginner;
 
 import com.jme3.app.SimpleApplication;
+import com.jme3.asset.plugins.ZipLocator;
 import com.jme3.font.BitmapText;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
@@ -62,6 +63,14 @@ public class HelloAssets extends SimpleApplication {
         DirectionalLight sun = new DirectionalLight();
         sun.setDirection(new Vector3f(-0.1f, -0.7f, -1.0f));
         rootNode.addLight(sun);
+        
+        /**
+         * Registered to a file "town.zip" in the top level of your project directory
+         */
+        assetManager.registerLocator("town.zip", ZipLocator.class);
+        Spatial scene = assetManager.loadModel("main.j3o");
+        scene.setLocalTranslation(0.0f, -5.0f, -2.0f);
+        rootNode.attachChild(scene);
 	}
 
 }
