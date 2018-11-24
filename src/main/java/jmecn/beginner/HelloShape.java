@@ -1,10 +1,8 @@
-package hello.shape;
+package jmecn.beginner;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Sphere;
-
-import hello.application.BaseApplication;
 
 public class HelloShape extends BaseApplication {
 

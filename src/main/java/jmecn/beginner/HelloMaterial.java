@@ -1,4 +1,4 @@
-package hello.material;
+package jmecn.beginner;
 
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -9,8 +9,6 @@ import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.scene.shape.Sphere;
 import com.jme3.texture.Texture;
-
-import hello.application.BaseApplication;
 
 public class HelloMaterial extends BaseApplication {
 

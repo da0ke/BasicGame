@@ -1,4 +1,4 @@
-package hello.node;
+package jmecn.beginner;
 
 import com.jme3.light.AmbientLight;
 import com.jme3.light.DirectionalLight;
@@ -10,8 +10,6 @@ import com.jme3.scene.Mesh;
 import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.shape.Sphere;
-
-import hello.application.BaseApplication;
 
 public class HelloNode extends BaseApplication {
 	

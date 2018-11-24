@@ -1,12 +1,10 @@
-package hello.mesh;
+package jmecn.beginner;
 
 import com.jme3.material.Material;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.VertexBuffer.Type;
 import com.jme3.util.BufferUtils;
-
-import hello.application.BaseApplication;
 
 public class HelloMesh extends BaseApplication {
 

@@ -1,4 +1,4 @@
-package hello.input;
+package jmecn.beginner;
 
 import com.jme3.input.KeyInput;
 import com.jme3.input.MouseInput;
@@ -17,8 +17,6 @@ import com.jme3.math.ColorRGBA;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.shape.Box;
 import com.jme3.texture.Texture;
-
-import hello.application.BaseApplication;
 
 public class HelloInput extends BaseApplication {
 

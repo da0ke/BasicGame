@@ -1,4 +1,4 @@
-package hello.box;
+package jmecn.beginner;
 import com.jme3.light.DirectionalLight;
 import com.jme3.material.Material;
 import com.jme3.math.FastMath;
@@ -7,8 +7,6 @@ import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Mesh;
 import com.jme3.scene.shape.Box;
-
-import hello.application.BaseApplication;
 
 public class HelloBox extends BaseApplication {
 	
