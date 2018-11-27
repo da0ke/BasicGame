@@ -30,7 +30,8 @@ public class Cube extends Node {
 	
 	private AssetManager assetManager;
 	
-	public Cube(AssetManager assetManager) {
+	public Cube(String name, AssetManager assetManager) {
+		this.name = name;
 		this.assetManager = assetManager;
 	}
 	

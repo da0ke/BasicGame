@@ -3,47 +3,44 @@ package game;
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
-import com.jme3.scene.Node;
 import com.jme3.scene.debug.Arrow;
-import com.jme3.scene.shape.Quad;
+import com.jme3.system.AppSettings;
 
 public class MagicCube extends SimpleApplication {
-	
 	
 
 	@Override
 	public void simpleInitApp() {
 		flyCam.setMoveSpeed(10);
+//		flyCam.setDragToRotate(true);
+
 		
 		addCoordinates();
 		
-		Cube cube1 = new Cube(assetManager);
-		cube1.setFace(new Face(FaceType.Front, ColorRGBA.White));
-		cube1.setFace(new Face(FaceType.Left, ColorRGBA.Yellow));
-		cube1.setFace(new Face(FaceType.Top, ColorRGBA.Green));
-		
-		Cube cube2 = new Cube(assetManager);
-		cube2.setFace(new Face(FaceType.Front, ColorRGBA.White));
-		cube2.setFace(new Face(FaceType.Left, ColorRGBA.Yellow));
-		cube2.setFace(new Face(FaceType.Top, ColorRGBA.Green));
-		cube2.move(0, 1.1f, 0);
-		
-		
-		Cube cube3 = new Cube(assetManager);
-		cube3.setFace(new Face(FaceType.Front, ColorRGBA.White));
-		cube3.setFace(new Face(FaceType.Left, ColorRGBA.Yellow));
-		cube3.setFace(new Face(FaceType.Top, ColorRGBA.Green));
-		cube3.move(0, 2.2f, 0);
-		
-		
-		
-		rootNode.attachChild(cube1);
-		rootNode.attachChild(cube2);
-		rootNode.attachChild(cube3);
+		makeMagicCube();
+	}
+	
+	
+	private void makeMagicCube() {
+		for(int k=0;k<3;k++) {
+			for(int j=0;j<3;j++) {
+				for(int i=0;i<3;i++) {
+					Cube cube = new Cube("cube", assetManager);
+					cube.setFace(new Face(FaceType.Front, ColorRGBA.White));
+					cube.setFace(new Face(FaceType.Back, ColorRGBA.Yellow));
+					cube.setFace(new Face(FaceType.Top, ColorRGBA.Red));
+					cube.setFace(new Face(FaceType.Bottom, ColorRGBA.Green));
+					cube.setFace(new Face(FaceType.Left, ColorRGBA.Blue));
+					cube.setFace(new Face(FaceType.Right, ColorRGBA.Orange));
+
+					cube.move(1.03f*i, 1.03f*j, 1.03f*k);
+					
+					rootNode.attachChild(cube);
+				}
+			}
+		}
 	}
 
 	
@@ -81,7 +78,13 @@ public class MagicCube extends SimpleApplication {
 	}
 	
 	public static void main(String[] args) {
+		AppSettings settings = new AppSettings(true);
+		settings.setTitle("魔方");
+		settings.setResolution(1024, 768);
+		
 		MagicCube app = new MagicCube();
+		app.setSettings(settings);
+		app.setShowSettings(false);
 		app.start();
 	}
 
