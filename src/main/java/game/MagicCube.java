@@ -1,8 +1,12 @@
 package game;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
+import com.jme3.math.Quaternion;
 import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.debug.Arrow;
@@ -10,12 +14,15 @@ import com.jme3.system.AppSettings;
 
 public class MagicCube extends SimpleApplication {
 	
+	private List<Cube> cubeList = new ArrayList<>();
 
 	@Override
 	public void simpleInitApp() {
 		flyCam.setMoveSpeed(10);
 //		flyCam.setDragToRotate(true);
-
+		
+		cam.setLocation(new Vector3f(-5.2567024f, 6.402977f, 11.973532f));
+		cam.setRotation(new Quaternion(0.053599607f, 0.93810284f, -0.16897957f, 0.29755002f));
 		
 		addCoordinates();
 		
@@ -24,10 +31,12 @@ public class MagicCube extends SimpleApplication {
 	
 	
 	private void makeMagicCube() {
-		for(int k=0;k<3;k++) {
+		for(int i=0;i<3;i++) {
 			for(int j=0;j<3;j++) {
-				for(int i=0;i<3;i++) {
-					Cube cube = new Cube("cube", assetManager);
+				for(int k=0;k<3;k++) {
+					String name = i+"_"+j+"_"+k;
+					
+					Cube cube = new Cube(name, assetManager);
 					cube.setFace(new Face(FaceType.Front, ColorRGBA.White));
 					cube.setFace(new Face(FaceType.Back, ColorRGBA.Yellow));
 					cube.setFace(new Face(FaceType.Top, ColorRGBA.Red));
@@ -36,11 +45,13 @@ public class MagicCube extends SimpleApplication {
 					cube.setFace(new Face(FaceType.Right, ColorRGBA.Orange));
 
 					cube.move(1.03f*i, 1.03f*j, 1.03f*k);
+					cubeList.add(cube);
 					
 					rootNode.attachChild(cube);
 				}
 			}
 		}
+		
 	}
 
 	
