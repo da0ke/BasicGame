@@ -19,7 +19,7 @@ public class MagicCube extends SimpleApplication {
 	@Override
 	public void simpleInitApp() {
 		flyCam.setMoveSpeed(10);
-//		flyCam.setDragToRotate(true);
+		flyCam.setDragToRotate(true);
 		
 		cam.setLocation(new Vector3f(-5.2567024f, 6.402977f, 11.973532f));
 		cam.setRotation(new Quaternion(0.053599607f, 0.93810284f, -0.16897957f, 0.29755002f));
