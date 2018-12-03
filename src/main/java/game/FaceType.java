@@ -9,5 +9,8 @@ public enum FaceType {
 	/**
 	 * 魔方的面
 	 */
-	LeftYZ, MiddleYZ, RightYZ;
+	LeftYZ, MiddleYZ, RightYZ
+	,LeftXY, MiddleXY, RightXY
+	,LeftXZ, MiddleXZ, RightXZ;
+	
 }

@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
@@ -24,18 +23,22 @@ import com.jme3.scene.debug.Arrow;
 import com.jme3.system.AppSettings;
 
 /**
- * Rubic魔方
+ * Rubik魔方
  * 
- * 本游戏术语解释 rubic：魔方 cube：魔方中的小方块 face：面，指魔方的面，也可指小方块的面
+ * 本游戏术语解释 rubik：魔方 
+ * cube：魔方中的小方块 
+ * face：面，指魔方的面，也可指小方块的面
  * faceType：面的类型，以Z轴方向为前面，Y轴方向为上面，X轴方向为右面
  * 
  * @author Administrator
  *
  */
-public class RubicCube extends SimpleApplication {
+public class RubikCube extends SimpleApplication {
 
 	// A temp pivot for rotate cube
 	private Node pivot;
+	
+	private Cube pickedCube;
 
 	private List<Cube> cubeList = new ArrayList<>();
 
@@ -57,27 +60,18 @@ public class RubicCube extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
-		cam.setLocation(new Vector3f(-6.0422177f, 7.484588f, 13.430967f));
-		cam.setRotation(new Quaternion(0.05572644f, 0.9411465f, -0.19288655f, 0.27190536f));
+		cam.setLocation(new Vector3f(-9.749997f, 8.143939f, 10.95721f));
+		cam.setRotation(new Quaternion(0.08476704f, 0.89286304f, -0.1893601f, 0.399691f));
 		flyCam.setMoveSpeed(10);
-//		flyCam.setEnabled(false);
+		flyCam.setEnabled(false);
 		addCoordinates();
 
-		makeRubicCube();
+		makeRubikCube();
 
 		pivot = new Node("pivot");
 		rootNode.attachChild(pivot);
 
-//		initKeys();
-
-	}
-
-	@Override
-	public void simpleUpdate(float tpf) {
-		super.simpleUpdate(tpf);
-
-//		rotateRubic(tpf, FaceType.LeftYZ);
-		rotateRubic(tpf, FaceType.MiddleYZ);
+		initKeys();
 	}
 
 	private void initKeys() {
@@ -114,17 +108,15 @@ public class RubicCube extends SimpleApplication {
 					float dist = results.getCollision(i).getDistance();
 					Vector3f pt = results.getCollision(i).getContactPoint();
 					String target = results.getCollision(i).getGeometry().getName();
-					System.out.println("Selection #" + i + ": " + target + " at " + pt + ", " + dist + " WU away.");
 				}
 				// Use the results -- we rotate the selected geometry.
 				if (results.size() > 0) {
 					// The closest result is the target that the player picked:
 					Geometry target = results.getClosestCollision().getGeometry();
 					// Here comes the action:
-					System.out.println(results.getClosestCollision());
-					if (target.getName().equals("Box")) {
-						isPicking = true;
-					}
+					pickedCube = (Cube) target.getParent();
+					isPicking = true;
+					System.out.println("select " + pickedCube.getName() + " " + pickedCube.getLocalTranslation());
 				}
 			}
 		}
@@ -135,8 +127,12 @@ public class RubicCube extends SimpleApplication {
 		@Override
 		public void onAnalog(String name, float intensity, float tpf) {
 			if (isPicking) {
+				System.out.println(intensity);
 				switch (name) {
 				case UP:
+					if(pickedCube.getLocalTranslation().x == 0) {
+						
+					}
 //					geom.rotate(-intensity*speed*4, 0, 0);
 					break;
 				case DOWN:
@@ -156,75 +152,165 @@ public class RubicCube extends SimpleApplication {
 		}
 	};
 
-	private void rotateRubic(float tpf, FaceType faceType) {
-
-		// 重置旋转支点下的方块
-//		for(Spatial cube : pivot.getChildren()) {
-//			Vector3f v3f = cube.getLocalTranslation();
-//			
-//			cube.removeFromParent();
-//			rootNode.attachChild(cube);
-//			
-//			cube.setLocalTranslation(v3f.x, v3f.y, v3f.z);
-//		}
+	private void rotateYZ(float tpf, FaceType faceType) {
+		removeCubeFromPivot();
 
 		List<Cube> list = new ArrayList<>();
+		float x = 0;
+		float y = 0;
+		float z = 0;
 		if (FaceType.LeftYZ == faceType) {
+			x = 0;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = UNIT_SIZE + UNIT_GAP;
 
-			// 获取需要旋转的面,共9个方块
-			for (Cube cube : cubeList) {
-				if (cube.getLocalTranslation().x == 0) {
-					list.add(cube);
-				}
-			}
-
-			// 设置旋转支点坐标
-			pivot.setLocalTranslation(0, (UNIT_SIZE * 3 + UNIT_GAP * 2) / 2, (UNIT_SIZE * 3 + UNIT_GAP * 2) / 2);
-
-			// 将所需面的方块加入旋转支点
-			for (Cube cube : list) {
-				if (cube.getParent() != pivot) {
-					cube.removeFromParent();
-					pivot.attachChild(cube);
-					cube.move(0, -UNIT_SIZE * 1.5f, -UNIT_SIZE * 1.5f);
-				}
-			}
-
-			// 旋转
-			Quaternion pitch45 = new Quaternion();
-			pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(1, 0, 0));
-			pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
 		} else if (FaceType.MiddleYZ == faceType) {
-			// 获取需要旋转的面,共9个方块
-			for (Cube cube : cubeList) {
-				if (cube.getLocalTranslation().x == UNIT_SIZE + UNIT_GAP) {
-					list.add(cube);
-				}
-			}
+			x = UNIT_SIZE + UNIT_GAP;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = UNIT_SIZE + UNIT_GAP;
 
-			// 设置旋转支点坐标
-			pivot.setLocalTranslation(UNIT_SIZE + UNIT_GAP, (UNIT_SIZE * 3 + UNIT_GAP * 2) / 2,
-					(UNIT_SIZE * 3 + UNIT_GAP * 2) / 2);
-
-			// 将所需面的方块加入旋转支点
-			for (Cube cube : list) {
-				if (cube.getParent() != pivot) {
-					cube.removeFromParent();
-					pivot.attachChild(cube);
-
-//					cube.move(UNIT_SIZE, -UNIT_SIZE * 1.5f, -UNIT_SIZE * 1.5f);
-				}
-			}
-
-			// 旋转
-			Quaternion pitch45 = new Quaternion();
-			pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(1, 0, 0));
-			pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+		} else if (FaceType.RightYZ == faceType) {
+			x = (UNIT_SIZE + UNIT_GAP) * 2;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = UNIT_SIZE + UNIT_GAP;
 		}
 
+		// 获取需要旋转的面,共9个方块
+		for (Cube cube : cubeList) {
+			if (cube.getLocalTranslation().x == x) {
+				list.add(cube);
+			}
+		}
+
+		// 设置旋转支点坐标
+		pivot.setLocalTranslation(x, y, z);
+
+		// 将所需面的方块加入旋转支点
+		for (Cube cube : list) {
+			if (cube.getParent() != pivot) {
+				cube.removeFromParent();
+				pivot.attachChild(cube);
+				cube.move(-x, -y, -z);
+			}
+		}
+
+		// 旋转
+		Quaternion pitch45 = new Quaternion();
+		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(1, 0, 0));
+		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
 	}
 
-	private void makeRubicCube() {
+	private void rotateXY(float tpf, FaceType faceType) {
+		removeCubeFromPivot();
+
+		List<Cube> list = new ArrayList<>();
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		if (FaceType.LeftXY == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = 0;
+
+		} else if (FaceType.MiddleXY == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = UNIT_SIZE + UNIT_GAP;
+
+		} else if (FaceType.RightXY == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = (UNIT_SIZE + UNIT_GAP) * 2;
+		}
+
+		// 获取需要旋转的面,共9个方块
+		for (Cube cube : cubeList) {
+			if (cube.getLocalTranslation().z == z) {
+				list.add(cube);
+			}
+		}
+
+		// 设置旋转支点坐标
+		pivot.setLocalTranslation(x, y, z);
+
+		// 将所需面的方块加入旋转支点
+		for (Cube cube : list) {
+			if (cube.getParent() != pivot) {
+				cube.removeFromParent();
+				pivot.attachChild(cube);
+				cube.move(-x, -y, -z);
+			}
+		}
+
+		// 旋转
+		Quaternion pitch45 = new Quaternion();
+		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(0, 0, 1));
+		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+	}
+
+	private void rotateXZ(float tpf, FaceType faceType) {
+		removeCubeFromPivot();
+
+		List<Cube> list = new ArrayList<>();
+		float x = 0;
+		float y = 0;
+		float z = 0;
+		if (FaceType.LeftXZ == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = 0;
+			z = UNIT_SIZE + UNIT_GAP;
+
+		} else if (FaceType.MiddleXZ == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = UNIT_SIZE + UNIT_GAP;
+			z = UNIT_SIZE + UNIT_GAP;
+
+		} else if (FaceType.RightXZ == faceType) {
+			x = UNIT_SIZE + UNIT_GAP;
+			y = (UNIT_SIZE + UNIT_GAP) * 2;
+			z = UNIT_SIZE + UNIT_GAP;
+		}
+
+		// 获取需要旋转的面,共9个方块
+		for (Cube cube : cubeList) {
+			if (cube.getLocalTranslation().y == y) {
+				list.add(cube);
+			}
+		}
+
+		// 设置旋转支点坐标
+		pivot.setLocalTranslation(x, y, z);
+
+		// 将所需面的方块加入旋转支点
+		for (Cube cube : list) {
+			if (cube.getParent() != pivot) {
+				cube.removeFromParent();
+				pivot.attachChild(cube);
+				cube.move(-x, -y, -z);
+			}
+		}
+
+		// 旋转
+		Quaternion pitch45 = new Quaternion();
+		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(0, 1, 0));
+		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+	}
+
+
+	private void removeCubeFromPivot() {
+		Vector3f pivotV3f = pivot.getLocalTranslation();
+		Quaternion pivotRotation = pivot.getLocalRotation();
+		for (Spatial cube : pivot.getChildren()) {
+			cube.removeFromParent();
+
+			cube.move(pivotV3f);
+			cube.setLocalRotation(pivotRotation);
+
+			rootNode.attachChild(cube);
+		}
+	}
+
+	private void makeRubikCube() {
 		for (int i = 0; i < 3; i++) {
 			for (int j = 0; j < 3; j++) {
 				for (int k = 0; k < 3; k++) {
@@ -238,7 +324,7 @@ public class RubicCube extends SimpleApplication {
 					cube.setFace(new Face(FaceType.Left, ColorRGBA.Blue));
 					cube.setFace(new Face(FaceType.Right, ColorRGBA.Orange));
 
-					cube.move(1.03f * i, 1.03f * j, 1.03f * k);
+					cube.move((UNIT_SIZE + UNIT_GAP) * i, (UNIT_SIZE + UNIT_GAP) * j, (UNIT_SIZE + UNIT_GAP) * k);
 					cubeList.add(cube);
 
 					rootNode.attachChild(cube);
@@ -285,7 +371,7 @@ public class RubicCube extends SimpleApplication {
 		settings.setResolution(1024, 768);
 		settings.setTitle("魔方");
 
-		RubicCube app = new RubicCube();
+		RubikCube app = new RubikCube();
 		app.setSettings(settings);
 		app.setShowSettings(false);
 		app.start();

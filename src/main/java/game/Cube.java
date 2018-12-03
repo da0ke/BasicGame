@@ -96,14 +96,16 @@ public class Cube extends Node {
 		Geometry geom = new Geometry("face", new Quad(1, 1));
 		geom.setMaterial(mat);
 		
+		
 		if(faceType == FaceType.Front) {
-			geom.move(0, 0, 1);
+			geom.setLocalTranslation(-0.5f, -0.5f, 0.5f);
 		} else if(faceType == FaceType.Back) {
-			geom.move(1, 0, 0);
+			geom.setLocalTranslation(0.5f, -0.5f, -0.5f);
 			Quaternion quaternion = new Quaternion();
 			quaternion.fromAngleAxis(FastMath.PI, new Vector3f(0,1,0));
 			geom.setLocalRotation(quaternion);
 		} else if(faceType == FaceType.Left) {
+			geom.setLocalTranslation(-0.5f, -0.5f, -0.5f);
 			Quaternion quaternion = new Quaternion();
 			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(0,1,0));
 			geom.setLocalRotation(quaternion);
@@ -111,13 +113,14 @@ public class Cube extends Node {
 			Quaternion quaternion = new Quaternion();
 			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(0,1,0));
 			geom.setLocalRotation(quaternion);
-			geom.move(1, 0, 1);
+			geom.move(0.5f, -0.5f, 0.5f);
 		} else if(faceType == FaceType.Top) {
+			geom.setLocalTranslation(-0.5f,0.5f, 0.5f);
 			Quaternion quaternion = new Quaternion();
 			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(1,0,0));
 			geom.setLocalRotation(quaternion);
-			geom.move(0, 1, 1);
 		} else if(faceType == FaceType.Bottom) {
+			geom.setLocalTranslation(-0.5f,-0.5f, -0.5f);
 			Quaternion quaternion = new Quaternion();
 			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
 			geom.setLocalRotation(quaternion);
