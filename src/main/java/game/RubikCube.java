@@ -6,8 +6,6 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.AnalogListener;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -21,6 +19,7 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.system.AppSettings;
+import com.jme3.input.event.MouseMotionEvent;
 
 /**
  * Rubik魔方
@@ -43,14 +42,11 @@ public class RubikCube extends SimpleApplication {
 	private List<Cube> cubeList = new ArrayList<>();
 
 	private boolean isPicking = false;
-	// Mouse movement: Up
-	private static final String UP = "up";
-	// Mouse movement: Down
-	private static final String DOWN = "down";
-	// Mouse movement: Left
-	private static final String LEFT = "left";
-	// Mouse movement: Right
-	private static final String RIGHT = "right";
+	// 鼠标横向移动距离，从picking开始
+	private int dx;
+	// 鼠标纵向移动距离，从picking开始
+	private int dy;
+	
 	// pick
 	private static final String PICK = "pick";
 	// 方块的尺寸
@@ -72,17 +68,27 @@ public class RubikCube extends SimpleApplication {
 		rootNode.attachChild(pivot);
 
 		initKeys();
+		
+		
 	}
 
 	private void initKeys() {
 		inputManager.addMapping(PICK, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
-		inputManager.addMapping(UP, new MouseAxisTrigger(MouseInput.AXIS_Y, false));
-		inputManager.addMapping(DOWN, new MouseAxisTrigger(MouseInput.AXIS_Y, true));
-		inputManager.addMapping(LEFT, new MouseAxisTrigger(MouseInput.AXIS_X, true));
-		inputManager.addMapping(RIGHT, new MouseAxisTrigger(MouseInput.AXIS_X, false));
 
-		inputManager.addListener(analogListener, UP, DOWN, LEFT, RIGHT);
 		inputManager.addListener(actionListener, PICK);
+		
+		inputManager.addRawInputListener(new RubikListenser() {
+
+			@Override
+			public void onMouseMotionEvent(MouseMotionEvent evt) {
+				if(isPicking) {
+					dx += evt.getDX();
+					dy += evt.getDY();
+					System.out.println(dx + "   "+dy);
+				}
+			}
+			
+		});
 	}
 
 	private ActionListener actionListener = new ActionListener() {
@@ -116,41 +122,14 @@ public class RubikCube extends SimpleApplication {
 					// Here comes the action:
 					pickedCube = (Cube) target.getParent();
 					isPicking = true;
-					System.out.println("select " + pickedCube.getName() + " " + pickedCube.getLocalTranslation());
+					dx = 0;
+					dy = 0;
+					
 				}
 			}
 		}
 	};
 
-	private AnalogListener analogListener = new AnalogListener() {
-
-		@Override
-		public void onAnalog(String name, float intensity, float tpf) {
-			if (isPicking) {
-				System.out.println(intensity);
-				switch (name) {
-				case UP:
-					if(pickedCube.getLocalTranslation().x == 0) {
-						
-					}
-//					geom.rotate(-intensity*speed*4, 0, 0);
-					break;
-				case DOWN:
-//					geom.rotate(intensity*speed*4, 0, 0);
-					break;
-				case LEFT:
-//					geom.rotate(0, -intensity*speed*4, 0);
-					break;
-				case RIGHT:
-//					geom.rotate(0, intensity*speed*4, 0);
-					break;
-				default:
-					break;
-				}
-			}
-
-		}
-	};
 
 	private void rotateYZ(float tpf, FaceType faceType) {
 		removeCubeFromPivot();
