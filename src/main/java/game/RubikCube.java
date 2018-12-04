@@ -47,6 +47,8 @@ public class RubikCube extends SimpleApplication {
 	// 鼠标纵向移动距离，从picking开始
 	private int dy;
 	
+	private float totalTpf;
+	
 	// pick
 	private static final String PICK = "pick";
 	// 方块的尺寸
@@ -56,11 +58,11 @@ public class RubikCube extends SimpleApplication {
 
 	@Override
 	public void simpleInitApp() {
-		cam.setLocation(new Vector3f(-9.749997f, 8.143939f, 10.95721f));
-		cam.setRotation(new Quaternion(0.08476704f, 0.89286304f, -0.1893601f, 0.399691f));
+		cam.setLocation(new Vector3f(-4.105831f, 4.6925287f, 5.9258566f));
+		cam.setRotation(new Quaternion(0.10000886f, 0.88508904f, -0.22370124f, 0.39569354f));
 		flyCam.setMoveSpeed(10);
 		flyCam.setEnabled(false);
-		addCoordinates();
+//		addCoordinates();
 
 		makeRubikCube();
 
@@ -69,8 +71,45 @@ public class RubikCube extends SimpleApplication {
 
 		initKeys();
 		
-		
+//		System.out.println(FastMath.HALF_PI); //1.5707964
+//		System.out.println(FastMath.PI); //3.1415927
+//		System.out.println(FastMath.HALF_PI*3); //4.712389
 	}
+
+	
+
+	@Override
+	public void simpleUpdate(float tpf) {
+		super.simpleUpdate(tpf);
+		
+		if(dy < -10) {
+			totalTpf = totalTpf + tpf;
+			rotateYZ(totalTpf, FaceType.LeftYZ);
+			
+			if(totalTpf >= 1) {
+				isPicking = false;
+				dy = 0;
+				dx = 0;
+				totalTpf = 0;
+				rotateYZ(1, FaceType.LeftYZ);
+				removeCubeFromPivot();
+			}
+		} else if(dx > 10) {
+			totalTpf = totalTpf + tpf;
+			rotateXZ(totalTpf, FaceType.LeftXZ);
+			
+			if(totalTpf >= 1) {
+				isPicking = false;
+				dy = 0;
+				dx = 0;
+				totalTpf = 0;
+				rotateXZ(1, FaceType.LeftXZ);
+				removeCubeFromPivot();
+			}
+		}
+	}
+
+
 
 	private void initKeys() {
 		inputManager.addMapping(PICK, new MouseButtonTrigger(MouseInput.BUTTON_LEFT));
@@ -84,7 +123,6 @@ public class RubikCube extends SimpleApplication {
 				if(isPicking) {
 					dx += evt.getDX();
 					dy += evt.getDY();
-					System.out.println(dx + "   "+dy);
 				}
 			}
 			
@@ -132,8 +170,6 @@ public class RubikCube extends SimpleApplication {
 
 
 	private void rotateYZ(float tpf, FaceType faceType) {
-		removeCubeFromPivot();
-
 		List<Cube> list = new ArrayList<>();
 		float x = 0;
 		float y = 0;
@@ -174,14 +210,12 @@ public class RubikCube extends SimpleApplication {
 		}
 
 		// 旋转
-		Quaternion pitch45 = new Quaternion();
-		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(1, 0, 0));
-		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+		Quaternion pitch90 = new Quaternion();
+		pitch90.fromAngleAxis(FastMath.HALF_PI * tpf, new Vector3f(1, 0, 0));
+		pivot.setLocalRotation(pitch90);
 	}
 
 	private void rotateXY(float tpf, FaceType faceType) {
-		removeCubeFromPivot();
-
 		List<Cube> list = new ArrayList<>();
 		float x = 0;
 		float y = 0;
@@ -222,14 +256,12 @@ public class RubikCube extends SimpleApplication {
 		}
 
 		// 旋转
-		Quaternion pitch45 = new Quaternion();
-		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(0, 0, 1));
-		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+		Quaternion pitch90 = new Quaternion();
+		pitch90.fromAngleAxis(FastMath.HALF_PI * tpf, new Vector3f(0, 0, 1));
+		pivot.setLocalRotation(pitch90);
 	}
 
 	private void rotateXZ(float tpf, FaceType faceType) {
-		removeCubeFromPivot();
-
 		List<Cube> list = new ArrayList<>();
 		float x = 0;
 		float y = 0;
@@ -270,23 +302,32 @@ public class RubikCube extends SimpleApplication {
 		}
 
 		// 旋转
-		Quaternion pitch45 = new Quaternion();
-		pitch45.fromAngleAxis(FastMath.PI / 2 * tpf, new Vector3f(0, 1, 0));
-		pivot.setLocalRotation(pivot.getLocalRotation().mult(pitch45));
+		Quaternion pitch90 = new Quaternion();
+		pitch90.fromAngleAxis(FastMath.HALF_PI * tpf, new Vector3f(0, 1, 0));
+		pivot.setLocalRotation(pitch90);
 	}
 
 
 	private void removeCubeFromPivot() {
 		Vector3f pivotV3f = pivot.getLocalTranslation();
-		Quaternion pivotRotation = pivot.getLocalRotation();
+		System.out.println("pivot v3f:"+pivotV3f);
+		Quaternion pitch90 = new Quaternion();
+		pitch90.fromAngleAxis(FastMath.PI / 2, new Vector3f(pivotV3f.x==0?1:0, pivotV3f.y==0?1:0, pivotV3f.z==0?1:0));
+		
 		for (Spatial cube : pivot.getChildren()) {
+			Vector3f worldV3f = cube.getWorldTranslation();
 			cube.removeFromParent();
-
-			cube.move(pivotV3f);
-			cube.setLocalRotation(pivotRotation);
-
+			
+			System.out.println(cube.getName()+"   "+worldV3f);
+			
+			cube.setLocalTranslation(worldV3f);
+			cube.setLocalRotation(cube.getLocalRotation().mult(pitch90));
 			rootNode.attachChild(cube);
 		}
+		
+//		for(Cube cube : cubeList) {
+//			System.out.println(cube.getName()+"   "+cube.getLocalTranslation());
+//		}
 	}
 
 	private void makeRubikCube() {
