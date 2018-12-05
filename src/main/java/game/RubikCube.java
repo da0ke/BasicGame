@@ -6,6 +6,7 @@ import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
+import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
@@ -84,7 +85,7 @@ public class RubikCube extends SimpleApplication {
 		
 		if(dy < -10) {
 			totalTpf = totalTpf + tpf;
-			rotateYZ(totalTpf, FaceType.LeftYZ);
+			rotateYZ(-totalTpf, FaceType.LeftYZ);
 			
 			if(totalTpf >= 1) {
 				isPicking = false;
@@ -212,6 +213,7 @@ public class RubikCube extends SimpleApplication {
 		// 旋转
 		Quaternion pitch90 = new Quaternion();
 		pitch90.fromAngleAxis(FastMath.HALF_PI * tpf, new Vector3f(1, 0, 0));
+		
 		pivot.setLocalRotation(pitch90);
 	}
 
@@ -311,23 +313,30 @@ public class RubikCube extends SimpleApplication {
 	private void removeCubeFromPivot() {
 		Vector3f pivotV3f = pivot.getLocalTranslation();
 		System.out.println("pivot v3f:"+pivotV3f);
+
+		Vector3f axis = new Vector3f(pivotV3f.x==0?1:0, pivotV3f.y==0?1:0, pivotV3f.z==0?1:0);
 		Quaternion pitch90 = new Quaternion();
-		pitch90.fromAngleAxis(FastMath.PI / 2, new Vector3f(pivotV3f.x==0?1:0, pivotV3f.y==0?1:0, pivotV3f.z==0?1:0));
+		pitch90.fromAngleAxis(FastMath.PI / 2, axis);
 		
 		for (Spatial cube : pivot.getChildren()) {
-			Vector3f worldV3f = cube.getWorldTranslation();
+			Vector3f v3f = cube.getWorldTranslation();
+			if(v3f.x>0&&v3f.x<0.001) {
+				v3f.setX(0);
+			}
+			if(v3f.y>0&&v3f.y<0.001) {
+				v3f.setY(0);
+			}
+			if(v3f.z>0&&v3f.z<0.001) {
+				v3f.setZ(0);
+			}
+			
 			cube.removeFromParent();
+			cube.setLocalTranslation(v3f);
 			
-			System.out.println(cube.getName()+"   "+worldV3f);
-			
-			cube.setLocalTranslation(worldV3f);
-			cube.setLocalRotation(cube.getLocalRotation().mult(pitch90));
+			cube.setLocalRotation(pitch90.mult(cube.getLocalRotation()));
 			rootNode.attachChild(cube);
+			
 		}
-		
-//		for(Cube cube : cubeList) {
-//			System.out.println(cube.getName()+"   "+cube.getLocalTranslation());
-//		}
 	}
 
 	private void makeRubikCube() {
