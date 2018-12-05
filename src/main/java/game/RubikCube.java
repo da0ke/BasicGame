@@ -2,12 +2,13 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import com.jme3.app.SimpleApplication;
 import com.jme3.collision.CollisionResults;
 import com.jme3.input.MouseInput;
 import com.jme3.input.controls.ActionListener;
-import com.jme3.input.controls.MouseAxisTrigger;
 import com.jme3.input.controls.MouseButtonTrigger;
+import com.jme3.input.event.MouseMotionEvent;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
 import com.jme3.math.FastMath;
@@ -20,7 +21,6 @@ import com.jme3.scene.Node;
 import com.jme3.scene.Spatial;
 import com.jme3.scene.debug.Arrow;
 import com.jme3.system.AppSettings;
-import com.jme3.input.event.MouseMotionEvent;
 
 /**
  * Rubik魔方
@@ -39,6 +39,7 @@ public class RubikCube extends SimpleApplication {
 	private Node pivot;
 	
 	private Cube pickedCube;
+	
 
 	private List<Cube> cubeList = new ArrayList<>();
 
@@ -56,6 +57,12 @@ public class RubikCube extends SimpleApplication {
 	private static final float UNIT_SIZE = 1f;
 	// 方块与方块的间隔
 	private static final float UNIT_GAP = 0.03f;
+	
+	
+	List<Face> leftList;
+	List<Face> rightList;
+	List<Face> topList;
+	
 
 	@Override
 	public void simpleInitApp() {
@@ -63,7 +70,9 @@ public class RubikCube extends SimpleApplication {
 		cam.setRotation(new Quaternion(0.10000886f, 0.88508904f, -0.22370124f, 0.39569354f));
 		flyCam.setMoveSpeed(10);
 		flyCam.setEnabled(false);
-//		addCoordinates();
+		addCoordinates();
+		
+		initLeftRightTopList();
 
 		makeRubikCube();
 
@@ -71,6 +80,8 @@ public class RubikCube extends SimpleApplication {
 		rootNode.attachChild(pivot);
 
 		initKeys();
+		
+		
 		
 //		System.out.println(FastMath.HALF_PI); //1.5707964
 //		System.out.println(FastMath.PI); //3.1415927
@@ -129,18 +140,83 @@ public class RubikCube extends SimpleApplication {
 
 		inputManager.addListener(actionListener, PICK);
 		
-		inputManager.addRawInputListener(new RubikListenser() {
-
-			@Override
-			public void onMouseMotionEvent(MouseMotionEvent evt) {
-				if(isPicking) {
-					dx += evt.getDX();
-					dy += evt.getDY();
-				}
-			}
-			
-		});
+		inputManager.addRawInputListener(rubicListener);
 	}
+	
+	private void initLeftRightTopList() {
+		leftList = new ArrayList<>();
+		Face l1 = new Face(new Vector2f(210,558), new Vector2f(273,536), new Vector2f(226,459), new Vector2f(288,429));
+		Face l2 = new Face(new Vector2f(288,532), new Vector2f(369,501), new Vector2f(380,382), new Vector2f(302,421));
+		Face l3 = new Face(new Vector2f(384,499), new Vector2f(486,460), new Vector2f(393,374), new Vector2f(486,330));
+		Face l4 = new Face(new Vector2f(229,440), new Vector2f(292,407), new Vector2f(241,347), new Vector2f(304,310));
+		Face l5 = new Face(new Vector2f(302,403), new Vector2f(381,365), new Vector2f(315,304), new Vector2f(389,259));
+		Face l6 = new Face(new Vector2f(396,357), new Vector2f(489,312), new Vector2f(402,252), new Vector2f(489,205));
+		Face l7 = new Face(new Vector2f(244,332), new Vector2f(305,297), new Vector2f(257,250), new Vector2f(317,212));
+		Face l8 = new Face(new Vector2f(317,291), new Vector2f(392,247), new Vector2f(325,205), new Vector2f(398,156));
+		Face l9 = new Face(new Vector2f(403,238), new Vector2f(492,185), new Vector2f(408,148), new Vector2f(493,90 ));
+		leftList.add(l1);
+		leftList.add(l2);
+		leftList.add(l3);
+		leftList.add(l4);
+		leftList.add(l5);
+		leftList.add(l6);
+		leftList.add(l7);
+		leftList.add(l8);
+		leftList.add(l9);
+		
+		rightList = new ArrayList<>();
+		Face r1 = new Face(new Vector2f(498,460), new Vector2f(594,503), new Vector2f(500,328), new Vector2f(589,380));
+		Face r2 = new Face(new Vector2f(605,509), new Vector2f(682,543), new Vector2f(599,389), new Vector2f(671,429));
+		Face r3 = new Face(new Vector2f(690,548), new Vector2f(751,573), new Vector2f(680,433), new Vector2f(738,468));
+		Face r4 = new Face(new Vector2f(499,313), new Vector2f(589,366), new Vector2f(498,199), new Vector2f(583,259));
+		Face r5 = new Face(new Vector2f(599,371), new Vector2f(670,414), new Vector2f(594,269), new Vector2f(660,315));
+		Face r6 = new Face(new Vector2f(678,418), new Vector2f(738,455), new Vector2f(668,321), new Vector2f(725,361));
+		Face r7 = new Face(new Vector2f(500,187), new Vector2f(582,246), new Vector2f(502,94 ), new Vector2f(578,157));
+		Face r8 = new Face(new Vector2f(593,255), new Vector2f(659,301), new Vector2f(587,163), new Vector2f(651,219));
+		Face r9 = new Face(new Vector2f(668,307), new Vector2f(723,349), new Vector2f(661,223), new Vector2f(714,267));
+		rightList.add(r1);
+		rightList.add(r2);
+		rightList.add(r3);
+		rightList.add(r4);
+		rightList.add(r5);
+		rightList.add(r6);
+		rightList.add(r7);
+		rightList.add(r8);
+		rightList.add(r9);
+
+		topList = new ArrayList<>();
+		Face t1 = new Face(new Vector2f(477,639), new Vector2f(547,624), new Vector2f(413,620), new Vector2f(478,604));
+		Face t2 = new Face(new Vector2f(557,618), new Vector2f(638,603), new Vector2f(493,600), new Vector2f(573,581));
+		Face t3 = new Face(new Vector2f(649,601), new Vector2f(748,579), new Vector2f(586,576), new Vector2f(685,554));
+		Face t4 = new Face(new Vector2f(399,617), new Vector2f(469,601), new Vector2f(318,598), new Vector2f(388,578));
+		Face t5 = new Face(new Vector2f(481,594), new Vector2f(560,578), new Vector2f(560,578), new Vector2f(485,550));
+		Face t6 = new Face(new Vector2f(578,571), new Vector2f(674,548), new Vector2f(496,544), new Vector2f(597,517));
+		Face t7 = new Face(new Vector2f(311,594), new Vector2f(378,575), new Vector2f(208,570), new Vector2f(280,546));
+		Face t8 = new Face(new Vector2f(389,570), new Vector2f(475,546), new Vector2f(290,541), new Vector2f(376,511));
+		Face t9 = new Face(new Vector2f(485,539), new Vector2f(586,511), new Vector2f(386,506), new Vector2f(490,470));
+		topList.add(t1);
+		topList.add(t2);
+		topList.add(t3);
+		topList.add(t4);
+		topList.add(t5);
+		topList.add(t6);
+		topList.add(t7);
+		topList.add(t8);
+		topList.add(t9);
+	}
+	
+	private RubikListenser rubicListener = new RubikListenser() {
+
+		@Override
+		public void onMouseMotionEvent(MouseMotionEvent evt) {
+			if(isPicking) {
+				dx += evt.getDX();
+				dy += evt.getDY();
+				
+			}
+		}
+		
+	};
 
 	private ActionListener actionListener = new ActionListener() {
 
@@ -176,10 +252,26 @@ public class RubikCube extends SimpleApplication {
 					dx = 0;
 					dy = 0;
 					
+					getPickingPosition(target, pickedCube);
 				}
 			}
 		}
 	};
+	
+	private void getPickingPosition(Geometry target, Cube cube) {
+
+//		System.out.println("picking a cube");
+//		System.out.println(pickedCube.getLocalTranslation());
+//		System.out.println(pickedCube.getLocalRotation());
+
+		System.out.println();
+		
+//		System.out.println(target.getLocalRotation());
+		
+		
+		
+		
+	}
 
 
 	private void rotateYZ(float tpf, FaceType faceType) {
