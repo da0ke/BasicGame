@@ -83,7 +83,19 @@ public class RubikCube extends SimpleApplication {
 	public void simpleUpdate(float tpf) {
 		super.simpleUpdate(tpf);
 		
-		if(dy < -10) {
+		if(dy < -10) { // 向下
+			totalTpf = totalTpf + tpf;
+			rotateYZ(totalTpf, FaceType.LeftYZ);
+			
+			if(totalTpf >= 1) {
+				isPicking = false;
+				dy = 0;
+				dx = 0;
+				totalTpf = 0;
+				rotateYZ(1, FaceType.LeftYZ);
+				removeCubeFromPivot(true);
+			}
+		} else if(dy > 10) { // 向上
 			totalTpf = totalTpf + tpf;
 			rotateYZ(-totalTpf, FaceType.LeftYZ);
 			
@@ -92,10 +104,10 @@ public class RubikCube extends SimpleApplication {
 				dy = 0;
 				dx = 0;
 				totalTpf = 0;
-				rotateYZ(1, FaceType.LeftYZ);
-				removeCubeFromPivot();
+				rotateYZ(-1, FaceType.LeftYZ);
+				removeCubeFromPivot(false);
 			}
-		} else if(dx > 10) {
+		} else if(dx > 10) { // 向右
 			totalTpf = totalTpf + tpf;
 			rotateXZ(totalTpf, FaceType.LeftXZ);
 			
@@ -105,7 +117,7 @@ public class RubikCube extends SimpleApplication {
 				dx = 0;
 				totalTpf = 0;
 				rotateXZ(1, FaceType.LeftXZ);
-				removeCubeFromPivot();
+				removeCubeFromPivot(true);
 			}
 		}
 	}
@@ -310,13 +322,11 @@ public class RubikCube extends SimpleApplication {
 	}
 
 
-	private void removeCubeFromPivot() {
+	private void removeCubeFromPivot(boolean positive) {
 		Vector3f pivotV3f = pivot.getLocalTranslation();
-		System.out.println("pivot v3f:"+pivotV3f);
-
 		Vector3f axis = new Vector3f(pivotV3f.x==0?1:0, pivotV3f.y==0?1:0, pivotV3f.z==0?1:0);
 		Quaternion pitch90 = new Quaternion();
-		pitch90.fromAngleAxis(FastMath.PI / 2, axis);
+		pitch90.fromAngleAxis(FastMath.HALF_PI * (positive?1:-1), axis);
 		
 		for (Spatial cube : pivot.getChildren()) {
 			Vector3f v3f = cube.getWorldTranslation();
@@ -335,7 +345,6 @@ public class RubikCube extends SimpleApplication {
 			
 			cube.setLocalRotation(pitch90.mult(cube.getLocalRotation()));
 			rootNode.attachChild(cube);
-			
 		}
 	}
 
