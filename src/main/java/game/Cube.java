@@ -3,12 +3,9 @@ package game;
 import com.jme3.asset.AssetManager;
 import com.jme3.material.Material;
 import com.jme3.math.ColorRGBA;
-import com.jme3.math.FastMath;
-import com.jme3.math.Quaternion;
-import com.jme3.math.Vector3f;
 import com.jme3.scene.Geometry;
 import com.jme3.scene.Node;
-import com.jme3.scene.shape.Quad;
+import com.jme3.scene.shape.Box;
 
 /**
  * 单个方块
@@ -93,43 +90,72 @@ public class Cube extends Node {
 		}
 		mat.setColor("Color", color);
 		
-		Geometry geom = new Geometry("face", new Quad(1, 1));
-		geom.setMaterial(mat);
 		
+		
+		Geometry geom;
 		if(faceType == FaceType.Front) {
-			geom.setName("front");
-			geom.setLocalTranslation(-0.5f, -0.5f, 0.5f);
+			geom = new Geometry("front", new Box(0.5f, 0.5f, 0.04f));
+			geom.setMaterial(mat);
+			geom.move(0, 0, 0.5f);
 		} else if(faceType == FaceType.Back) {
-			geom.setName("back");
-			geom.setLocalTranslation(0.5f, -0.5f, -0.5f);
-			Quaternion quaternion = new Quaternion();
-			quaternion.fromAngleAxis(FastMath.PI, new Vector3f(0,1,0));
-			geom.setLocalRotation(quaternion);
+			geom = new Geometry("back", new Box(0.5f, 0.5f, 0.04f));
+			geom.setMaterial(mat);
+			geom.move(0, 0, -0.5f);
 		} else if(faceType == FaceType.Left) {
-			geom.setName("left");
-			geom.setLocalTranslation(-0.5f, -0.5f, -0.5f);
-			Quaternion quaternion = new Quaternion();
-			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(0,1,0));
-			geom.setLocalRotation(quaternion);
+			geom = new Geometry("left", new Box(0.04f, 0.5f, 0.5f));
+			geom.setMaterial(mat);
+			geom.move(-0.5f, 0, 0);
 		} else if(faceType == FaceType.Right) {
-			geom.setName("right");
-			Quaternion quaternion = new Quaternion();
-			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(0,1,0));
-			geom.setLocalRotation(quaternion);
-			geom.move(0.5f, -0.5f, 0.5f);
+			geom = new Geometry("left", new Box(0.04f, 0.5f, 0.5f));
+			geom.setMaterial(mat);
+			geom.move(0.5f, 0, 0);
 		} else if(faceType == FaceType.Top) {
-			geom.setName("top");
-			geom.setLocalTranslation(-0.5f,0.5f, 0.5f);
-			Quaternion quaternion = new Quaternion();
-			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(1,0,0));
-			geom.setLocalRotation(quaternion);
+			geom = new Geometry("top", new Box(0.5f, 0.04f, 0.5f));
+			geom.setMaterial(mat);
+			geom.move(0, 0.5f, 0);
 		} else if(faceType == FaceType.Bottom) {
-			geom.setName("bottom");
-			geom.setLocalTranslation(-0.5f,-0.5f, -0.5f);
-			Quaternion quaternion = new Quaternion();
-			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
-			geom.setLocalRotation(quaternion);
+			geom = new Geometry("bottom", new Box(0.5f, 0.04f, 0.5f));
+			geom.setMaterial(mat);
+			geom.move(0, -0.5f, 0);
+		} else {
+			geom = new Geometry("geom", new Box(0.1f, 0.1f, 0.1f));
+			geom.setMaterial(mat);
 		}
+		
+//		if(faceType == FaceType.Front) {
+//			geom.setName("front");
+//			geom.setLocalTranslation(-0.5f, -0.5f, 0.5f);
+//		} else if(faceType == FaceType.Back) {
+//			geom.setName("back");
+//			geom.setLocalTranslation(0.5f, -0.5f, -0.5f);
+//			Quaternion quaternion = new Quaternion();
+//			quaternion.fromAngleAxis(FastMath.PI, new Vector3f(0,1,0));
+//			geom.setLocalRotation(quaternion);
+//		} else if(faceType == FaceType.Left) {
+//			geom.setName("left");
+//			geom.setLocalTranslation(-0.5f, -0.5f, -0.5f);
+//			Quaternion quaternion = new Quaternion();
+//			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(0,1,0));
+//			geom.setLocalRotation(quaternion);
+//		} else if(faceType == FaceType.Right) {
+//			geom.setName("right");
+//			Quaternion quaternion = new Quaternion();
+//			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(0,1,0));
+//			geom.setLocalRotation(quaternion);
+//			geom.move(0.5f, -0.5f, 0.5f);
+//		} else if(faceType == FaceType.Top) {
+//			geom.setName("top");
+//			geom.setLocalTranslation(-0.5f,0.5f, 0.5f);
+//			Quaternion quaternion = new Quaternion();
+//			quaternion.fromAngleAxis(-FastMath.PI/2, new Vector3f(1,0,0));
+//			geom.setLocalRotation(quaternion);
+//		} else if(faceType == FaceType.Bottom) {
+//			geom.setName("bottom");
+//			geom.setLocalTranslation(-0.5f,-0.5f, -0.5f);
+//			Quaternion quaternion = new Quaternion();
+//			quaternion.fromAngleAxis(FastMath.PI/2, new Vector3f(1,0,0));
+//			geom.setLocalRotation(quaternion);
+//		}
 		
 		return geom;
 	}
